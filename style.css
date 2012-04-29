@@ -1,0 +1,136 @@
+#score{
+    font: bold xx-large "Comic Sans MS", "Zapfino", "Brush Script", cursive, sans-serif;
+    color: #a8d7f0;
+}
+
+#editor{
+    margin-top: 20px;
+}
+
+.error_window{
+    border: solid 5px rgba(0, 238, 255, 0.6);
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.tool_box{
+    -moz-transform: rotateZ(180deg);
+    -webkit-transform: rotateZ(180deg);
+    -o-transform: rotateZ(180deg);
+    -ms-transform: rotateZ(180deg);
+    transform: rotateZ(180deg);
+    -moz-transform-origin: 100% 0;
+    -webkit-transform-origin: 100% 0;
+    -o-transform-origin: 100% 0;
+    -ms-transform-origin: 100% 0;
+    transform-origin: 100% 0;
+    -moz-transition: -moz-transform 1s linear 0;
+    -webkit-transition: -webkit-transform 1s linear 0;
+    -o-transition: -o-transform 1s linear 0;
+    -ms-transition: -ms-transform 1s linear 0;
+    transition: transform 1s linear 0;
+}
+
+.tool_box_clicked{
+    border: outset 5px #aaa;
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.4);
+    -moz-transform: rotateZ(0deg);
+    -webkit-transform: rotateZ(0deg);
+    -o-transform: rotateZ(0deg);
+    -ms-transform: rotateZ(0deg);
+    transform: rotateZ(0deg);
+}
+
+.panel{
+    border: outset 5px #f7bf4f;
+    border-radius: 15px;
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+/*ここから先、タッチされた時のパネルのスタイルやアニメーションの設定*/
+.touched_on_time{
+    -moz-animation: 'anim_grad_blue_to_white' 0.25s ease 0 6 alternate;
+    -webkit-animation: 'anim_grad_blue_to_white' 0.25s ease 0 6 alternate;
+    -o-animation: 'anim_grad_blue_to_white' 0.25s ease 0 6 alternate;
+    -ms-animation: 'anim_grad_blue_to_white' 0.25s ease 0 6 alternate;
+}
+
+@-moz-keyframes 'anim_grad_blue_to_white'{
+    0%{background: -moz-linear-gradient(left, white, #41f4fa);}
+    100%{background: -moz-linear-gradient(right, white, #41f4fa);}
+}
+
+@-webkit-keyframes 'anim_grad_blue_to_white'{
+    0%{background-color: white/*-webkit-gradient(linear, left, right, from(white), to(#41f4fa))*/;}
+    100%{background-color: #41f4fa/*-webkit-gradient(linear, right, left, from(white), to(#41f4fa))*/;}
+}
+
+.touched_slightly_late{
+    -moz-animation: 'anim_grad_lightgreen_to_white' 0.25s ease 0 6 alternate;
+    -webkit-animation: 'anim_grad_lightgreen_to_white' 0.25s ease 0 6 alternate;
+    -o-animation: 'anim_grad_lightgreen_to_white' 0.25s ease 0 6 alternate;
+    -ms-animation: 'anim_grad_lightgreen_to_white' 0.25s ease 0 6 alternate;
+}
+
+@-moz-keyframes 'anim_grad_lightgreen_to_white'{
+    0%{background: -moz-linear-gradient(left -30deg, white, #41fac6);}
+    100%{background: -moz-linear-gradient(right -30deg, white, #41fac6);}
+}
+
+@-webkit-keyframes 'anim_grad_lightgreen_to_white'{
+    0%{background-color: white/*-webkit-gradient(linear, 0 21.13%, 100% 78.87%, from(white), to(#41fac6))*/;}
+    100%{background-color: #41fac6/*-webkit-gradient(linear, 100% 78.87%, 0 21.13%, from(white), to(#41fac6))*/;}
+}
+
+.touched_late{
+    -moz-animation: 'anim_grad_green_to_white' 0.25s ease 0 6 alternate;
+    -webkit-animation: 'anim_grad_green_to_white' 0.25s ease 0 6 alternate;
+    -o-animation: 'anim_grad_green_to_white' 0.25s ease 0 6 alternate;
+    -ms-animation: 'anim_grad_green_to_white' 0.25s ease 0 6 alternate;
+}
+
+@-moz-keyframes 'anim_grad_green_to_white'{
+    0%{background: -moz-linear-gradient(top left, white, #9afa41);}
+    100%{background: -moz-linear-gradient(bottom right, white, #9afa41);}
+}
+
+@-webkit-keyframes 'anim_grad_green_to_white'{
+    0%{background-color: white/*-webkit-gradient(linear, top left, bottom right, from(white), to(#9afa41))*/;}
+    100%{background-color: #9afa41/*-webkit-gradient(linear, bottom right, top left, from(white), to(#9afa41))*/;}
+}
+
+.touched_very_late{
+    -moz-animation: 'anim_grad_orange_to_white' 0.25s ease 0 6 alternate;
+    -webkit-animation: 'anim_grad_orange_to_white' 0.25s ease 0 6 alternate;
+    -o-animation: 'anim_grad_orange_to_white' 0.25s ease 0 6 alternate;
+    -ms-animation: 'anim_grad_orange_to_white' 0.25s ease 0 6 alternate;
+}
+
+@-moz-keyframes 'anim_grad_orange_to_white'{
+    0%{background: -moz-linear-gradient(left -60deg, white, #fab041);}
+    100%{background: -moz-linear-gradient(right -60deg, white, #fab041);}
+}
+
+@-webkit-keyframes 'anim_grad_blue_to_white'{
+    0%{background-color: white/*-webkit-gradient(linear, 21.13% 0, 78.87% 100%, from(white), to(#fab041))*/;}
+    100%{background-color: #fab041/*-webkit-gradient(linear, 78.87% 100%, 21.13% 0, from(white), to(#fab041))*/;}
+}
+
+.touched_but_fail{
+    -moz-animation: 'anim_grad_red_to_white' 0.25s ease 0 6 alternate;
+    -webkit-animation: 'anim_grad_red_to_white' 0.25s ease 0 6 alternate;
+    -o-animation: 'anim_grad_red_to_white' 0.25s ease 0 6 alternate;
+    -ms-animation: 'anim_grad_red_to_white' 0.25s ease 0 6 alternate;
+}
+
+@-moz-keyframes 'anim_grad_red_to_white'{
+    0%{background: -moz-linear-gradient(top, #fffbad, #eb1e17);}
+    100%{background: -moz-linear-gradient(bottom, #fffbad, #eb1e17);}
+}
+
+@-webkit-keyframes 'anim_grad_red_to_white'{
+    0%{background-color: #ffabad/*-webkit-gradient(linear, top, bottom, from(#fffbad), to(#eb1e17))*/;}
+    100%{background-color: #eb1e17/*-webkit-gradient(linear, bottom, top, from(#fffbad), to(#eb1e17))*/;}
+}
+
