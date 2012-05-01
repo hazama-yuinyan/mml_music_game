@@ -1,7 +1,7 @@
 define(["scripts/lib/enchant.js", "utils"], function(dummy, util){
 
 return enchant.Class.create({
-    initialize : function(parse_tree, main){
+    initialize : function(parse_tree, callback){
         this.buffer_size = 4096;
         this.context = (window.AudioContext) ? new AudioContext() : new webkitAudioContext();
         this.env = {       //グローバルなシーケンサーの状態
@@ -19,8 +19,10 @@ return enchant.Class.create({
         this.compressor = this.context.createDynamicsCompressor();
         this.actual_sample_rate = this.context.sampleRate;
         this.cur_frame = 0;             //現在の再生側の経過時間をサンプルフレーム数で表したもの
+        this.next_frame = 0;
         this.sound_producer = new Worker("scripts/sound_producer.js");   //バックグラウンドで波形生成を担当する
         this.can_play = true;
+        this.oncomplete = callback || null;
         
         var _self = this;
         this.processAudio = function(e){
@@ -123,16 +125,6 @@ return enchant.Class.create({
     },
     
     /**
-     * MIDIのノートナンバーを周波数に変換する
-     * @param note_num {Number} 変換するMIDIのノートナンバー
-     * @returns {Number} 変換された周波数値
-     */
-    convertToFrequency : function(note_num){
-        var octave = Math.floor(note_num / 12) - 1;
-        return(440 * Math.pow(2.0, octave - 4.0 + (note_num % 12 - 9) / 12.0));
-    },
-    
-    /**
      * MIDIのTick数からサンプルフレーム数に変換する
      * @param ticks {Number} 変換するTick数
      * @returns {Number} 変換されたサンプルフレーム数
@@ -148,7 +140,11 @@ return enchant.Class.create({
     prepareToProcessNextNode : function(node){
         if(!node){             //全部のASTノードの処理が終わったので、波形生成スレッドを停止する
             this.sound_producer.terminate();
-            this.compressor.connect(this.context.destination);
+            if(this.oncomplete){
+                this.oncomplete();
+            }else{
+                this.compressor.connect(this.context.destination);
+            }
             return;
         }
         var track_num = this.env.for_worker.getCurrentTrackNum();
@@ -200,15 +196,15 @@ return enchant.Class.create({
         var start_frame = this.cur_ast_node.end_frame || 0, ticks = (node.cons == "chord") ? node[1][0].value : node[0][1][0].value;
         node.end_frame = start_frame + this.convertMidiTicksToSampleFrame(ticks);
         var next_nodes = (node.cons == "chord") ? node[0].toArray() : [[node]];
-        var freqs = next_nodes.map(function(note){
-            return this.convertToFrequency(note[0][0][0][0].value);
+        var pitches = next_nodes.map(function(note){
+            return note[0][0][0][0].value;
         }, this);
         this.cur_ast_node = node;
         var vol = (node.cons == "chord") ? this.env.for_worker.getVolumeForTrack(track_num) :
             (node[0][3][0].value != "none") ? node[0][3][0].value : this.env.for_worker.getVolumeForTrack(track_num);
         
         this.sound_producer.postMessage({
-            freq_list : freqs, program_num : this.env.for_worker.getProgramNumForTrack(track_num), note_len : node.end_frame - start_frame,
+            pitch_list : pitches, program_num : this.env.for_worker.getProgramNumForTrack(track_num), note_len : node.end_frame - start_frame,
                 secs_per_frame : this.secs_per_frame, volume : vol / 127.0, track_num : track_num
         });
     },
@@ -257,7 +253,8 @@ return enchant.Class.create({
         
         track_info.frame_in_buf = index;
         if(track_num === 0){
-            this.cur_frame += data_length;
+            this.cur_frame = this.next_frame;
+            this.next_frame += data_length;
         }
     },
     

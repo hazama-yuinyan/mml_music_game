@@ -807,52 +807,68 @@ enchant.InputManager = enchant.Class.create(enchant.Manager, {
         if(game.input.a && this.operator.operateA){
 			this.operator.operateA();
 			game.input['a'] = false;
-		}else if(game.input.b && this.operator.operateB){
+		}
+        if(game.input.b && this.operator.operateB){
 			this.operator.operateB();
 			game.input['b'] = false;
-		}else if(game.input.c && this.operator.operateC){
+		}
+        if(game.input.c && this.operator.operateC){
 			this.operator.operateC();
 			game.input['c'] = false;
-		}else if(game.input.d && this.operator.operateD){
+		}
+        if(game.input.d && this.operator.operateD){
     		this.operator.operateD();
 			game.input['d'] = false;
-		}else if(game.input.e && this.operator.operateE){
+		}
+        if(game.input.e && this.operator.operateE){
     		this.operator.operateE();
 			game.input['e'] = false;
-		}else if(game.input.f && this.operator.operateF){
+		}
+        if(game.input.f && this.operator.operateF){
     		this.operator.operateF();
 			game.input['f'] = false;
-		}else if(game.input.g && this.operator.operateG){
+		}
+        if(game.input.g && this.operator.operateG){
     		this.operator.operateG();
 			game.input['g'] = false;
-		}else if(game.input.h && this.operator.operateH){
+		}
+        if(game.input.h && this.operator.operateH){
     		this.operator.operateH();
 			game.input['h'] = false;
-		}else if(game.input.i && this.operator.operateI){
+		}
+        if(game.input.i && this.operator.operateI){
     		this.operator.operateI();
 			game.input['i'] = false;
-		}else if(game.input.j && this.operator.operateJ){
+		}
+        if(game.input.j && this.operator.operateJ){
     		this.operator.operateJ();
 			game.input['j'] = false;
-		}else if(game.input.k && this.operator.operateK){
+		}
+        if(game.input.k && this.operator.operateK){
     		this.operator.operateK();
 			game.input['k'] = false;
-		}else if(game.input.l && this.operator.operateL){
+		}
+        if(game.input.l && this.operator.operateL){
     		this.operator.operateL();
 			game.input['l'] = false;
-		}else if(game.input.m && this.operator.operateM){
+		}
+        if(game.input.m && this.operator.operateM){
     		this.operator.operateM();
 			game.input['m'] = false;
-		}else if(game.input.n && this.operator.operateN){
+		}
+        if(game.input.n && this.operator.operateN){
     		this.operator.operateN();
 			game.input['n'] = false;
-		}else if(game.input.o && this.operator.operateO){
+		}
+        if(game.input.o && this.operator.operateO){
     		this.operator.operateO();
 			game.input['o'] = false;
-		}else if(game.input.p && this.operator.operateP){
+		}
+        if(game.input.p && this.operator.operateP){
     		this.operator.operateP();
 			game.input['p'] = false;
-		}else if(game.input.q && this.operator.operateQ){
+		}
+        if(game.input.q && this.operator.operateQ){
     		this.operator.operateQ();
 			game.input['q'] = false;
 		}

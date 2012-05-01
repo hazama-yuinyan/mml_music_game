@@ -222,7 +222,7 @@ define(["scripts/lib/enchant.js", "lexer", "scripts/parser.js", "utils", "lib/tr
             this.stringifyErrors = function(){
                 var errors = parser.errors, str = "";
                 errors.forEach(function(error){
-                    str += "An error occured in " + error.cause + " : " + error.msg + "\n";
+                    str += "An error occurred in " + error.cause + " : " + error.msg + "\n";
                 });
                 
                 return str;

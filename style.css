@@ -3,6 +3,10 @@
     color: #a8d7f0;
 }
 
+.count_down_label{
+    font: bold xx-large "Comic Sans MS", "Zapfino", "Brush Script", cursive, sans-serif;
+}
+
 #editor{
     margin-top: 20px;
 }
@@ -14,6 +18,9 @@
 }
 
 .tool_box{
+    border: outset 5px #aaa;
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.4);
     -moz-transform: rotateZ(180deg);
     -webkit-transform: rotateZ(180deg);
     -o-transform: rotateZ(180deg);
@@ -40,6 +47,16 @@
     -o-transform: rotateZ(0deg);
     -ms-transform: rotateZ(0deg);
     transform: rotateZ(0deg);
+    -moz-transform-origin: 100% 0;
+    -webkit-transform-origin: 100% 0;
+    -o-transform-origin: 100% 0;
+    -ms-transform-origin: 100% 0;
+    transform-origin: 100% 0;
+    -moz-transition: -moz-transform 1s linear 0;
+    -webkit-transition: -webkit-transform 1s linear 0;
+    -o-transition: -o-transform 1s linear 0;
+    -ms-transition: -ms-transform 1s linear 0;
+    transition: transform 1s linear 0;
 }
 
 .panel{
@@ -48,88 +65,158 @@
     background-color: rgba(255, 255, 255, 0.6);
 }
 
-/*ここから先、タッチされた時のパネルのスタイルやアニメーションの設定*/
-.touched_on_time{
-    -moz-animation: 'anim_grad_blue_to_white' 0.25s ease 0 6 alternate;
-    -webkit-animation: 'anim_grad_blue_to_white' 0.25s ease 0 6 alternate;
-    -o-animation: 'anim_grad_blue_to_white' 0.25s ease 0 6 alternate;
-    -ms-animation: 'anim_grad_blue_to_white' 0.25s ease 0 6 alternate;
+.PanelHighlighted{
+    -moz-animation: 'anim_border_color_trans' 0.5s linear 0 1 normal;
+    -webkit-animation: 'anim_border_color_trans' 0.5s linear 0 1 normal;
+    -o-animation: 'anim_border_color_trans' 0.5s linear 0 1 normal;
+    -ms-animation: 'anim_border_color_trans' 0.5s linear 0 1 normal;
 }
 
-@-moz-keyframes 'anim_grad_blue_to_white'{
+@-moz-keyframes 'anim_border_color_trans'{
+    0%{border-color: #2121ff;}
+    50%{border-color: #00ff00;}
+    100%{border-color: #fa1b1b;}
+}
+
+@-webkit-keyframes 'anim_border_color_trans'{
+    0%{border-color: #2121ff;}
+    50%{border-color: #00ff00;}
+    100%{border-color: #fa1b1b;}
+}
+
+/*ここから先、タッチされた時のパネルのスタイルやアニメーションの設定*/
+.touched_very_early{
+    -moz-animation: 'anim_touched_very_early' 0.1s ease 0 4 alternate;
+    -webkit-animation: 'anim_touched_very_early' 0.1s ease 0 4 alternate;
+    -o-animation: 'anim_touched_very_early' 0.1s ease 0 4 alternate;
+    -ms-animation: 'anim_touched_very_early' 0.1s ease 0 4 alternate;
+}
+
+@-moz-keyframes 'anim_touched_very_early'{
     0%{background: -moz-linear-gradient(left, white, #41f4fa);}
     100%{background: -moz-linear-gradient(right, white, #41f4fa);}
 }
 
-@-webkit-keyframes 'anim_grad_blue_to_white'{
+@-webkit-keyframes 'anim_touched_very_early'{
+    0%{background-color: white/*-webkit-gradient(linear, left, right, from(white), to(#41f4fa))*/;}
+    100%{background-color: #ffd28f/*-webkit-gradient(linear, right, left, from(white), to(#41f4fa))*/;}
+}
+
+.touched_early{
+    -moz-animation: 'anim_touched_early' 0.1s ease 0 4 alternate;
+    -webkit-animation: 'anim_touched_early' 0.1s ease 0 4 alternate;
+    -o-animation: 'anim_touched_early' 0.1s ease 0 4 alternate;
+    -ms-animation: 'anim_touched_early' 0.1s ease 0 4 alternate;
+}
+
+@-moz-keyframes 'anim_touched_early'{
+    0%{background: -moz-linear-gradient(left, white, #41f4fa);}
+    100%{background: -moz-linear-gradient(right, white, #41f4fa);}
+}
+
+@-webkit-keyframes 'anim_touched_early'{
+    0%{background-color: white/*-webkit-gradient(linear, left, right, from(white), to(#41f4fa))*/;}
+    100%{background-color: #c3ff8a/*-webkit-gradient(linear, right, left, from(white), to(#41f4fa))*/;}
+}
+
+.touched_slightly_early{
+    -moz-animation: 'anim_touched_slightly_early' 0.1s ease 0 4 alternate;
+    -webkit-animation: 'anim_touched_slightly_early' 0.1s ease 0 4 alternate;
+    -o-animation: 'anim_touched_slightly_early' 0.1s ease 0 4 alternate;
+    -ms-animation: 'anim_touched_slightly_early' 0.1s ease 0 4 alternate;
+}
+
+@-moz-keyframes 'anim_touched_slightly_early'{
+    0%{background: -moz-linear-gradient(left, white, #41f4fa);}
+    100%{background: -moz-linear-gradient(right, white, #41f4fa);}
+}
+
+@-webkit-keyframes 'anim_touched_slightly_early'{
+    0%{background-color: white/*-webkit-gradient(linear, left, right, from(white), to(#41f4fa))*/;}
+    100%{background-color: #8fffdf/*-webkit-gradient(linear, right, left, from(white), to(#41f4fa))*/;}
+}
+
+.touched_on_time{
+    -moz-animation: 'anim_touched_on_time' 0.1s ease 0 4 alternate;
+    -webkit-animation: 'anim_touched_on_time' 0.1s ease 0 4 alternate;
+    -o-animation: 'anim_touched_on_time' 0.1s ease 0 4 alternate;
+    -ms-animation: 'anim_touched_on_time' 0.1s ease 0 4 alternate;
+}
+
+@-moz-keyframes 'anim_touched_on_time'{
+    0%{background: -moz-linear-gradient(left, white, #41f4fa);}
+    100%{background: -moz-linear-gradient(right, white, #41f4fa);}
+}
+
+@-webkit-keyframes 'anim_touched_on_time'{
     0%{background-color: white/*-webkit-gradient(linear, left, right, from(white), to(#41f4fa))*/;}
     100%{background-color: #41f4fa/*-webkit-gradient(linear, right, left, from(white), to(#41f4fa))*/;}
 }
 
 .touched_slightly_late{
-    -moz-animation: 'anim_grad_lightgreen_to_white' 0.25s ease 0 6 alternate;
-    -webkit-animation: 'anim_grad_lightgreen_to_white' 0.25s ease 0 6 alternate;
-    -o-animation: 'anim_grad_lightgreen_to_white' 0.25s ease 0 6 alternate;
-    -ms-animation: 'anim_grad_lightgreen_to_white' 0.25s ease 0 6 alternate;
+    -moz-animation: 'anim_touched_slightly_late' 0.1s ease 0 4 alternate;
+    -webkit-animation: 'anim_touched_slightly_late' 0.1s ease 0 4 alternate;
+    -o-animation: 'anim_touched_slightly_late' 0.1s ease 0 4 alternate;
+    -ms-animation: 'anim_touched_slightly_late' 0.1s ease 0 4 alternate;
 }
 
-@-moz-keyframes 'anim_grad_lightgreen_to_white'{
+@-moz-keyframes 'anim_touched_slightly_late'{
     0%{background: -moz-linear-gradient(left -30deg, white, #41fac6);}
     100%{background: -moz-linear-gradient(right -30deg, white, #41fac6);}
 }
 
-@-webkit-keyframes 'anim_grad_lightgreen_to_white'{
+@-webkit-keyframes 'anim_touched_slightly_late'{
     0%{background-color: white/*-webkit-gradient(linear, 0 21.13%, 100% 78.87%, from(white), to(#41fac6))*/;}
     100%{background-color: #41fac6/*-webkit-gradient(linear, 100% 78.87%, 0 21.13%, from(white), to(#41fac6))*/;}
 }
 
 .touched_late{
-    -moz-animation: 'anim_grad_green_to_white' 0.25s ease 0 6 alternate;
-    -webkit-animation: 'anim_grad_green_to_white' 0.25s ease 0 6 alternate;
-    -o-animation: 'anim_grad_green_to_white' 0.25s ease 0 6 alternate;
-    -ms-animation: 'anim_grad_green_to_white' 0.25s ease 0 6 alternate;
+    -moz-animation: 'anim_touched_late' 0.1s ease 0 4 alternate;
+    -webkit-animation: 'anim_touched_late' 0.1s ease 0 4 alternate;
+    -o-animation: 'anim_touched_late' 0.1s ease 0 4 alternate;
+    -ms-animation: 'anim_touched_late' 0.1s ease 0 4 alternate;
 }
 
-@-moz-keyframes 'anim_grad_green_to_white'{
+@-moz-keyframes 'anim_touched_late'{
     0%{background: -moz-linear-gradient(top left, white, #9afa41);}
     100%{background: -moz-linear-gradient(bottom right, white, #9afa41);}
 }
 
-@-webkit-keyframes 'anim_grad_green_to_white'{
+@-webkit-keyframes 'anim_touched_late'{
     0%{background-color: white/*-webkit-gradient(linear, top left, bottom right, from(white), to(#9afa41))*/;}
     100%{background-color: #9afa41/*-webkit-gradient(linear, bottom right, top left, from(white), to(#9afa41))*/;}
 }
 
 .touched_very_late{
-    -moz-animation: 'anim_grad_orange_to_white' 0.25s ease 0 6 alternate;
-    -webkit-animation: 'anim_grad_orange_to_white' 0.25s ease 0 6 alternate;
-    -o-animation: 'anim_grad_orange_to_white' 0.25s ease 0 6 alternate;
-    -ms-animation: 'anim_grad_orange_to_white' 0.25s ease 0 6 alternate;
+    -moz-animation: 'anim_touched_very_late' 0.1s ease 0 4 alternate;
+    -webkit-animation: 'anim_touched_very_late' 0.1s ease 0 4 alternate;
+    -o-animation: 'anim_touched_very_late' 0.1s ease 0 4 alternate;
+    -ms-animation: 'anim_touched_very_late' 0.1s ease 0 4 alternate;
 }
 
-@-moz-keyframes 'anim_grad_orange_to_white'{
+@-moz-keyframes 'anim_touched_very_late'{
     0%{background: -moz-linear-gradient(left -60deg, white, #fab041);}
     100%{background: -moz-linear-gradient(right -60deg, white, #fab041);}
 }
 
-@-webkit-keyframes 'anim_grad_blue_to_white'{
+@-webkit-keyframes 'anim_touched_very_late'{
     0%{background-color: white/*-webkit-gradient(linear, 21.13% 0, 78.87% 100%, from(white), to(#fab041))*/;}
     100%{background-color: #fab041/*-webkit-gradient(linear, 78.87% 100%, 21.13% 0, from(white), to(#fab041))*/;}
 }
 
 .touched_but_fail{
-    -moz-animation: 'anim_grad_red_to_white' 0.25s ease 0 6 alternate;
-    -webkit-animation: 'anim_grad_red_to_white' 0.25s ease 0 6 alternate;
-    -o-animation: 'anim_grad_red_to_white' 0.25s ease 0 6 alternate;
-    -ms-animation: 'anim_grad_red_to_white' 0.25s ease 0 6 alternate;
+    -moz-animation: 'anim_touched_but_fail' 0.1s ease 0 4 alternate;
+    -webkit-animation: 'anim_touched_but_fail' 0.1s ease 0 4 alternate;
+    -o-animation: 'anim_touched_but_fail' 0.1s ease 0 4 alternate;
+    -ms-animation: 'anim_touched_but_fail' 0.1s ease 0 4 alternate;
 }
 
-@-moz-keyframes 'anim_grad_red_to_white'{
+@-moz-keyframes 'anim_touched_but_fail'{
     0%{background: -moz-linear-gradient(top, #fffbad, #eb1e17);}
     100%{background: -moz-linear-gradient(bottom, #fffbad, #eb1e17);}
 }
 
-@-webkit-keyframes 'anim_grad_red_to_white'{
+@-webkit-keyframes 'anim_touched_but_fail'{
     0%{background-color: #ffabad/*-webkit-gradient(linear, top, bottom, from(#fffbad), to(#eb1e17))*/;}
     100%{background-color: #eb1e17/*-webkit-gradient(linear, bottom, top, from(#fffbad), to(#eb1e17))*/;}
 }
