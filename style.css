@@ -65,23 +65,80 @@
     background-color: rgba(255, 255, 255, 0.6);
 }
 
-.PanelHighlighted{
-    -moz-animation: 'anim_border_color_trans' 0.5s linear 0 1 normal;
-    -webkit-animation: 'anim_border_color_trans' 0.5s linear 0 1 normal;
-    -o-animation: 'anim_border_color_trans' 0.5s linear 0 1 normal;
-    -ms-animation: 'anim_border_color_trans' 0.5s linear 0 1 normal;
+#result_wrapper{
+    display: none;
+    position: absolute;
+    z-index: 100;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+#score_block{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    margin: -50px 0 0 -100px;
+    text-align: center;
+}
+
+#score_wrapper{
+    border: solid 2px #76f7f7;
+    border-radius: 10px;
+    -moz-animation: 'anim_border_color_trans' 3s linear 1s infinite normal;
+    -webkit-animation: 'anim_border_color_trans' 3s linear 1s infinite normal;
+    -o-animation: 'anim_border_color_trans' 3s linear 1s infinite normal;
+    -ms-animation: 'anim_border_color_trans' 3s linear 1s infinite normal;
 }
 
 @-moz-keyframes 'anim_border_color_trans'{
     0%{border-color: #2121ff;}
     50%{border-color: #00ff00;}
-    100%{border-color: #fa1b1b;}
+    80%{border-color: #fa1b1b;}
+    100%{border-color: #2121ff;}
 }
 
 @-webkit-keyframes 'anim_border_color_trans'{
     0%{border-color: #2121ff;}
     50%{border-color: #00ff00;}
-    100%{border-color: #fa1b1b;}
+    80%{border-color: #fa1b1b;}
+    100%{border-color: #2121ff;}
+}
+
+#score_wrapper > h3{
+    font-size: 12px;
+}
+
+#result_score{
+    display: inline-block;
+    width: 80%;
+    font: bold large sans-serif;
+    border-bottom: double 1px white;
+    margin-bottom: 5px;
+}
+
+#btn_tweet {
+    display: inline-block;
+}
+
+#btn_tweet a {
+    display: block;
+    padding: 10px 12px;
+    background: #35ccff;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 5px;
+    line-height: 1;
+    text-shadow: -1px -1px 0 #4295c1;
+    text-decoration: none;
+} 
+
+#btn_tweet a:hover {
+    opacity: 0.7;
 }
 
 /*ここから先、タッチされた時のパネルのスタイルやアニメーションの設定*/

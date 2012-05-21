@@ -20,14 +20,17 @@ main.game_start = function(){
         }
         var _self = this;
         this.sequencer = new Sequencer(tree, function(){
+            var tool_box = document.getElementsByClassName("tool_box_clicked")[0];
+        tool_box.className = "tool_box";
             var generator = new NormalPatternGenerator();
             var patterns = generator.make(_self.sequencer.note_tags);
-            game.is_in_game = true;
+            
             setTimeout(function(){
                 _self.sequencer.compressor.connect(_self.sequencer.context.destination);
                 var task_manager = _self.task_manager;
                 task_manager.add(new HighlightPanelOnNoteTask(patterns, _self.sequencer, _self.screen.panels, _self.screen.markers,
                     _self.screen.info_bar, task_manager));
+                _self.progress_task.setComplete();
             }, 3000);
             
             var count_label = _self.task_manager.stage.createLabelAtCenter("3", {style : 'font: bold xx-large "Comic Sans MS", "Zapfino", "Brush Script", cursive, sans-serif',
@@ -39,9 +42,10 @@ main.game_start = function(){
         console.value = "エラー発生！:" + e.message;
         return;
     }
-    console.value = "ゲームを開始します。しばらくお待ちください";    
-    var tool_box = document.getElementsByClassName("tool_box_clicked")[0];
-    tool_box.className = "tool_box";
+    console.value = "ゲームを開始します。しばらくお待ちください";
+    this.progress_task = new RespondTask(console, this.task_manager);
+    this.task_manager.add(this.progress_task);
+    game.is_in_game = true;
 };
 
 main.close_box = function(){
@@ -63,6 +67,25 @@ main.handleParserErrors = function(){
 
 main.closeErrorWindow = function(){
     game.currentScene.removeChild(this.error_window);
+};
+
+main.showResult = function(){
+    var wrapper = new enchant.Label("");
+    var result = document.getElementById("result_wrapper");
+    var btn_tweet = document.getElementById("btn_tweet"), info_bar = this.screen.info_bar;
+    var btn_tweet_a_elem = btn_tweet.firstElementChild;
+    var url = btn_tweet_a_elem.getAttribute("href");
+    var text = url + "似非音ゲーで" + info_bar.score + "ポイント獲得したよ！「ハマるブラウザゲームをつくろう」";
+
+    btn_tweet_a_elem.setAttribute("href", encodeURI(text));
+    
+    var score_display = document.getElementById("result_score");
+    score_display.innerText = info_bar.score;
+    result.style.display = "block";
+    wrapper._element.appendChild(result);
+    wrapper.width = game.width;
+    wrapper.height = game.height;
+    this.task_manager.stage.addChild(wrapper);
 };
 
 var NormalPatternGenerator = enchant.Class.create({
@@ -129,11 +152,19 @@ var InformationBar = enchant.Class.create(enchant.Group, {
         enchant.Group.call(this);
         
         this.score = 0;
+        this.num_chains = 0;
+        this.color = {r : 0, b : 0};
         var score_label = new enchant.Label("SCORE:0");
         score_label.id = "score";
+        var chains_label = new enchant.Label("chain");
+        chains_label.width = 100;
+        chains_label.moveTo(game.width - 100, 15);
+        chains_label.visible = false;
+        chains_label.font = 'normal large "Comic Sans MS", "Zapfino", "Brush Script", cursive, sans-serif';
         
         var tool_box = new enchant.Label(
-            '<textarea id="editor" cols="50" rows="20">' +
+            '<label for="editor" style="font-size: x-large">MMLソース</label><br>' +
+            '<textarea id="editor" name="editor" cols="50" rows="20">' +
             '@1 t110 l4 cdef edcr efga gfer\n' +
             'crcr crcr l8 ccddeeff l4 edcr\n' +
             'l2 {ccd}{dee} {ffr}e dc r4\n' +
@@ -143,7 +174,7 @@ var InformationBar = enchant.Class.create(enchant.Group, {
             '"dfa<c>""g<cd>""eg<c>"r\n' +
             'l2 "ceg""dfa" "egb""cdfa" "dfgb""ceg" l4 "<ceg<c"\n' +
             '</textarea>' +
-            '<input id="error_console" type="text" readonly>' +
+            '<input id="error_console" type="text" size="50" readonly>' +
             '<p><input type="button" value="コンパイル" onclick="main.game_start()"><input type="button" value="閉じる" onclick="main.close_box()"></p>'
             );
         tool_box.className = "tool_box_clicked";
@@ -153,11 +184,30 @@ var InformationBar = enchant.Class.create(enchant.Group, {
         
         this.addChild(score_label);
         this.addChild(tool_box);
+        this.addChild(chains_label);
         
         this.addScore = function(score){
             this.score += score;
             score_label.text = "SCORE:" + this.score;
         };
+        
+        this.incrementChains = function(){
+            ++this.num_chains;
+            chains_label.text = this.num_chains + '<span style="font-size: medium">' + ((this.num_chains > 1) ? "chains" : "chain") + "</span>";
+            if(this.num_chains % 10 == 0){
+                if(this.color.r < 255){this.color.r += Math.floor(0.5 * this.num_chains);}
+                if(this.color.b < 255){this.color.b += this.num_chains;}
+                chains_label.color = "rgb(" + this.color.r + ", 0, " + this.color.b + ")";
+            }
+            if(this.num_chains == 1){chains_label.visible = true;}
+        };
+        
+        this.resetChains = function(){
+            this.num_chains = 0;
+            this.color.r = 0;
+            this.color.b = 0;
+            chains_label.visible = false;
+        }
     }
 });
 
@@ -178,6 +228,29 @@ var Screen = enchant.Class.create({
     
     getPanel : function(num){
         return this.panels[num];
+    }
+});
+
+var RespondTask = enchant.Class.create(enchant.TaskBase, {
+    initialize : function(console, task_manager){
+        enchant.TaskBase.call(this, task_manager, "Respond");
+        
+        this.console = console;
+        this.next_updating_frame = game.frame + game.fps;
+        this.is_complete = false;
+    },
+    
+    setComplete : function(){
+        this.is_complete = true;
+    },
+    
+    execute : function(){
+        if(game.frame >= this.next_updating_frame){
+            this.console.value += '.';
+            this.next_updating_frame = game.frame + game.fps;
+        }
+        
+        if(!this.is_complete){this.task_manager.add(this);}
     }
 });
 
@@ -260,22 +333,29 @@ var HighlightPanelOnNoteTask = enchant.Class.create(enchant.TaskBase, {
         this.cur_sample_frame = this.sequencer.cur_frame;
         if(this.cur_index < this.patterns.length){
             this.task_manager.add(this);
+        }else{
+            setTimeout(function(){
+                main.showResult();
+            }, 1000);
         }
     }
 });
 
 var ANIM_GRADATION_CLASSES = ["touched_very_early", "touched_early", "touched_slightly_early", "touched_on_time",
     "touched_slightly_late", "touched_late", "touched_late", "touched_but_fail"];
-var TOUCH_TIMING_ON_TIME = 3, TOUCH_TIMING_FAILED = 7;
+var TOUCH_TIMING_ON_TIME = 3, TOUCH_TIMING_FAILED = 7, THRESHOLD_FAIL = 24000, THRESHOLD_XXX = 16800, THRESHOLD_SLIGHTLY = 9600,
+THRESHOLD_JUST = 4800;
 
 var HandlePanelsTask = enchant.Class.create(enchant.TaskBase, {
     initialize : function(panels, markers, sequencer, info_bar, task_manager){
         enchant.TaskBase.call(this, task_manager, "HandlePanel");
         
-        this.targets = panels;
+        this.panels = panels;
         this.markers = markers;
         this.panel_nums = [];
         this.note_play_frames = [];
+        this.panel_nums_in_animation = [];
+        this.start_animation_frames = [];
         this.info_bar = info_bar;
         this.sequencer = sequencer;
         this.input_operator = task_manager.stage.getManager("input").operator;
@@ -294,41 +374,49 @@ var HandlePanelsTask = enchant.Class.create(enchant.TaskBase, {
         return -1;
     },
     
-    checkTouchTiming : function(panel_num, note_play_frame){
-        var index, touched_panel_nums = this.input_operator.touched_panel_nums;
-        if((index = touched_panel_nums.indexOf(panel_num)) == -1){return -1;}
-        
-        var diff_time = note_play_frame - this.sequencer.cur_frame, diff_time_abs = Math.abs(diff_time);
-        if(diff_time_abs <= 4800){
-            this.info_bar.addScore(1000);   //とりあえず追加するスコアをハードコーディング
-            return TOUCH_TIMING_ON_TIME;
-        }else if(diff_time_abs <= 9600){
-            this.info_bar.addScore(500);
-            return (diff_time >= 0) ? TOUCH_TIMING_ON_TIME - 1 : TOUCH_TIMING_ON_TIME + 1;
-        }else if(diff_time_abs <= 16800){
-            this.info_bar.addScore(250);
-            return (diff_time >= 0) ? TOUCH_TIMING_ON_TIME - 2 : TOUCH_TIMING_ON_TIME + 2;
-        }else if(diff_time_abs <= 24000){
-            this.info_bar.addScore(100);
-            return (diff_time >= 0) ? TOUCH_TIMING_ON_TIME - 3 : TOUCH_TIMING_ON_TIME + 3;
-        }else{
+    checkTouchTiming : function(note_play_frame, cur_frame){
+        var diff_time = note_play_frame - cur_frame, diff_time_abs = Math.abs(diff_time);
+        if(diff_time_abs > THRESHOLD_FAIL){
+            this.info_bar.resetChains();
             return TOUCH_TIMING_FAILED;
+        }
+        
+        this.info_bar.incrementChains();
+        if(diff_time_abs <= THRESHOLD_JUST){
+            this.info_bar.addScore((this.info_bar.num_chains + 1) * 250);   //とりあえず追加するスコアをハードコーディング
+            return TOUCH_TIMING_ON_TIME;
+        }else if(diff_time_abs <= THRESHOLD_SLIGHTLY){
+            this.info_bar.addScore((this.info_bar.num_chains + 1) * 150);
+            return (diff_time >= 0) ? TOUCH_TIMING_ON_TIME - 1 : TOUCH_TIMING_ON_TIME + 1;
+        }else if(diff_time_abs <= THRESHOLD_XXX){
+            this.info_bar.addScore((this.info_bar.num_chains + 1) * 75);
+            return (diff_time >= 0) ? TOUCH_TIMING_ON_TIME - 2 : TOUCH_TIMING_ON_TIME + 2;
+        }else{
+            this.info_bar.addScore((this.info_bar.num_chains + 1) * 25);
+            return (diff_time >= 0) ? TOUCH_TIMING_ON_TIME - 3 : TOUCH_TIMING_ON_TIME + 3;
         }
     },
     
     execute : function(){
-        var result;
-        this.panel_nums.forEach(function(panel_num, index){
-            if((result = this.checkTouchTiming(panel_num, this.note_play_frames[index])) != -1){
-                this.targets[panel_num].className = "panel " + ANIM_GRADATION_CLASSES[result];
-                this.markers[panel_num].visible = false;
-                this.panel_nums.splice(index, 1);
-                this.note_play_frames.splice(index, 1);
+        var result, cur_frame = this.sequencer.cur_frame;
+        this.input_operator.touched_panel_nums.forEach(function(touched_panel_num){
+            var index;
+            if((index = this.panel_nums.indexOf(touched_panel_num)) == -1){ //マーカーのないパネルを叩いてしまった場合
+                this.info_bar.resetChains();
+                return;
             }
+            
+            result = this.checkTouchTiming(this.note_play_frames[index], cur_frame);
+            var panel_num = this.panel_nums[index];
+            this.panels[panel_num].className = "panel " + ANIM_GRADATION_CLASSES[result];
+            this.markers[panel_num].visible = false;
+            this.panel_nums_in_animation.push(panel_num);
+            this.start_animation_frames.push(game.frame);
+            this.panel_nums.splice(index, 1);
+            this.note_play_frames.splice(index, 1);
         }, this);
         
-        var cur_frame = this.sequencer.cur_frame;
-        var index = this.findLastIndexOf(this.note_play_frames, function(frame){
+        var index = this.findLastIndexOf(this.note_play_frames, function(frame){    //タッチされなかったパネル番号を削除する
             return NUM_TOUCH_SUCCESS_FRAMES + frame < cur_frame;
         });
         if(index != -1){
@@ -336,6 +424,14 @@ var HandlePanelsTask = enchant.Class.create(enchant.TaskBase, {
             this.note_play_frames.splice(0, index);
         }
         this.input_operator.touched_panel_nums.splice(0);
+        
+        this.start_animation_frames.forEach(function(start_animation_frame, index){
+            if(game.frame >= Math.round(start_animation_frame + game.fps / 5)){
+                this.panels[this.panel_nums_in_animation[index]].className = "panel";
+                this.panel_nums_in_animation.splice(index, 1);
+                this.start_animation_frames.splice(index, 1);
+            }
+        }, this);
         
         this.task_manager.add(this);
     }
@@ -459,7 +555,6 @@ game.onload = function(){
         marker.moveTo(panel.x + 5, panel.y + 5);
         marker.scale(0.01);
         marker.visible = false;
-        marker._element.style["z-index"] = 10;
         stage.addChild(marker);
         markers.push(marker);
     }
